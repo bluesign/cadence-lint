@@ -28,9 +28,9 @@ import (
 	"sync"
 	"syscall/js"
 
-	"github.com/onflow/cadence/runtime/common"
-
+	"github.com/onflow/cadence-tools/languageserver/evm"
 	"github.com/onflow/cadence-tools/languageserver/server"
+	"github.com/onflow/cadence/runtime/common"
 )
 
 const globalFunctionNamePrefix = "CADENCE_LANGUAGE_SERVER"
@@ -193,6 +193,7 @@ func start(id int) {
 	err = languageServer.SetOptions(
 		server.WithAddressImportResolver(addressImportResolver),
 		server.WithStringImportResolver(stringImportResolver),
+		server.WithExtendedStandardLibraryValues(evm.FVMStandardLibraryValues()...),
 	)
 	if err != nil {
 		panic(err)
