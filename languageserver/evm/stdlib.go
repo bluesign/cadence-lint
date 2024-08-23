@@ -21,15 +21,10 @@ package evm
 import (
 	"github.com/onflow/cadence/runtime/common"
 	"github.com/onflow/cadence/runtime/stdlib"
-	"strings"
 
 	"github.com/onflow/cadence"
-	"github.com/onflow/cadence/runtime"
-	"github.com/onflow/cadence/runtime/errors"
 	"github.com/onflow/cadence/runtime/interpreter"
 	"github.com/onflow/cadence/runtime/sema"
-
-	"github.com/onflow/flow-go/model/flow"
 )
 
 const (
@@ -65,57 +60,6 @@ var (
 
 	EVMAddressBytesCadenceType = cadence.NewConstantSizedArrayType(AddressLength, cadence.UInt8Type)
 )
-
-// abiEncodingError
-type abiEncodingError struct {
-	Type interpreter.StaticType
-}
-
-var _ errors.UserError = abiEncodingError{}
-
-func (abiEncodingError) IsUserError() {}
-
-func (e abiEncodingError) Error() string {
-	var b strings.Builder
-	b.WriteString("failed to ABI encode value")
-
-	ty := e.Type
-	if ty != nil {
-		b.WriteString(" of type ")
-		b.WriteString(ty.String())
-	}
-
-	return b.String()
-}
-
-// abiDecodingError
-type abiDecodingError struct {
-	Type    interpreter.StaticType
-	Message string
-}
-
-var _ errors.UserError = abiDecodingError{}
-
-func (abiDecodingError) IsUserError() {}
-
-func (e abiDecodingError) Error() string {
-	var b strings.Builder
-	b.WriteString("failed to ABI decode data")
-
-	ty := e.Type
-	if ty != nil {
-		b.WriteString(" with type ")
-		b.WriteString(ty.String())
-	}
-
-	message := e.Message
-	if message != "" {
-		b.WriteString(": ")
-		b.WriteString(message)
-	}
-
-	return b.String()
-}
 
 const internalEVMTypeEncodeABIFunctionName = "encodeABI"
 
@@ -593,76 +537,6 @@ var internalEVMStandardLibraryType = stdlib.StandardLibraryType{
 	Name: InternalEVMContractName,
 	Type: InternalEVMContractType,
 	Kind: common.DeclarationKindContract,
-}
-
-func SetupEnvironment(
-	env runtime.Environment,
-	contractAddress flow.Address,
-) {
-	location := common.NewAddressLocation(nil, common.Address(contractAddress), ContractName)
-
-	env.DeclareType(
-		internalEVMStandardLibraryType,
-		location,
-	)
-	env.DeclareValue(
-		newInternalEVMStandardLibraryValue(nil, location),
-		location,
-	)
-}
-
-func NewEVMAddressCadenceType(address common.Address) *cadence.StructType {
-	return cadence.NewStructType(
-		common.NewAddressLocation(nil, address, ContractName),
-		evmAddressTypeQualifiedIdentifier,
-		[]cadence.Field{
-			{
-				Identifier: "bytes",
-				Type:       EVMAddressBytesCadenceType,
-			},
-		},
-		nil,
-	)
-}
-
-func NewBalanceCadenceType(address common.Address) *cadence.StructType {
-	return cadence.NewStructType(
-		common.NewAddressLocation(nil, address, ContractName),
-		evmBalanceTypeQualifiedIdentifier,
-		[]cadence.Field{
-			{
-				Identifier: "attoflow",
-				Type:       cadence.UIntType,
-			},
-		},
-		nil,
-	)
-}
-
-func NewEVMBlockCadenceType(address common.Address) *cadence.StructType {
-	return cadence.NewStructType(
-		common.NewAddressLocation(nil, address, ContractName),
-		evmBlockTypeQualifiedIdentifier,
-		[]cadence.Field{
-			{
-				Identifier: "height",
-				Type:       cadence.UInt64Type,
-			},
-			{
-				Identifier: "hash",
-				Type:       cadence.StringType,
-			},
-			{
-				Identifier: "totalSupply",
-				Type:       cadence.IntType,
-			},
-			{
-				Identifier: "timestamp",
-				Type:       cadence.UInt64Type,
-			},
-		},
-		nil,
-	)
 }
 
 // FVMtandardLibraryValues returns the standard library values which are provided by the FVM
