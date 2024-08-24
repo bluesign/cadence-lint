@@ -7,11 +7,11 @@ require (
 	github.com/google/uuid v1.6.0
 	github.com/mattn/go-isatty v0.0.20
 	github.com/mitchellh/mapstructure v1.5.0
-	github.com/onflow/cadence v1.0.0-preview.49
+	github.com/onflow/cadence v1.0.0-preview.50
 	github.com/onflow/cadence-tools/lint v1.0.0-preview.37
 	github.com/onflow/cadence-tools/test v1.0.0-preview.37
-	github.com/onflow/flow-go v0.37.7-0.20240822174309-8b4fff2114d4
-	github.com/onflow/flow-go-sdk v1.0.0-preview.51
+	github.com/onflow/flow-go v0.37.7-0.20240824003907-3100b6532c7c
+	github.com/onflow/flow-go-sdk v1.0.0-preview.53
 	github.com/onflow/flowkit/v2 v2.0.0-stable-cadence-alpha.31
 	github.com/sourcegraph/jsonrpc2 v0.1.0
 	github.com/spf13/afero v1.10.0
