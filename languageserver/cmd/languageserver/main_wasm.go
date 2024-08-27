@@ -29,6 +29,8 @@ import (
 	"syscall/js"
 
 	"github.com/onflow/cadence/runtime/common"
+	"github.com/onflow/cadence/runtime/stdlib"
+	evmstdlib "github.com/onflow/flow-go/fvm/evm/stdlib"
 
 	"github.com/onflow/cadence-tools/languageserver/server"
 )
@@ -193,7 +195,16 @@ func start(id int) {
 	err = languageServer.SetOptions(
 		server.WithAddressImportResolver(addressImportResolver),
 		server.WithStringImportResolver(stringImportResolver),
+		server.WithExtendedStandardLibraryValues(
+			stdlib.StandardLibraryValue{
+				Name:  evmstdlib.InternalEVMContractName,
+				Type:  evmstdlib.InternalEVMContractType,
+				Value: nil,
+				Kind:  common.DeclarationKindContract,
+			},
+		),
 	)
+
 	if err != nil {
 		panic(err)
 	}
